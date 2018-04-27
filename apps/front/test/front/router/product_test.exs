@@ -21,10 +21,20 @@ defmodule Front.Router.ProductTest do
     Store.clear()
 
     product_one =
-      Store.Product.new(%{sku: "p123", name: "Printer-one", description: "Some printer"})
+      Store.Product.new(%{
+        sku: "p123",
+        type: "computer_accessory",
+        name: "Printer-one",
+        description: "Some printer"
+      })
 
     product_two =
-      Store.Product.new(%{sku: "p456", name: "Printer-two", description: "Some printer"})
+      Store.Product.new(%{
+        sku: "p456",
+        type: "kitchen_appliance",
+        name: "Printer-two",
+        description: "Some printer"
+      })
 
     :ok = Store.insert(product_one)
     :ok = Store.insert(product_two)
@@ -36,6 +46,6 @@ defmodule Front.Router.ProductTest do
     assert conn.status == 200
 
     assert conn.resp_body ==
-             ~s([{"description":"Some printer","name":"Printer-two","sku":"p456"},{"description":"Some printer","name":"Printer-one","sku":"p123"}])
+             ~s([{"description":"Some printer","name":"Printer-two","sku":"p456","type":"kitchen_appliance"},{"description":"Some printer","name":"Printer-one","sku":"p123","type":"computer_accessory"}])
   end
 end

@@ -1,5 +1,5 @@
 defmodule StoreTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   setup [:empty_store, :insert_sample_product]
 
@@ -7,8 +7,13 @@ defmodule StoreTest do
     assert [{product.sku, product}] == :ets.lookup(Store, product.sku)
   end
 
-  test "it lists products", %{product: product} do
+  test "it lists all products", %{product: product} do
     assert [product] == Store.all()
+  end
+
+  test "it filters products by type", %{product: product} do
+    assert [product] == Store.by_type("computer_accessory")
+    assert [] == Store.by_type("kitchen_appliance")
   end
 
   test "it finds a product", %{product: product} do
@@ -21,7 +26,13 @@ defmodule StoreTest do
   end
 
   defp insert_sample_product(_context) do
-    product = Store.Product.new(%{sku: "p123", name: "Printer", description: "Some printer"})
+    product =
+      Store.Product.new(%{
+        sku: "p123",
+        type: "computer_accessory",
+        name: "Printer",
+        description: "Some printer"
+      })
 
     :ok = Store.insert(product)
 

@@ -35,4 +35,17 @@ defmodule Store do
     |> :ets.tab2list()
     |> Keyword.values()
   end
+
+  @spec by_type(Store.Product.type()) :: [Store.Product.t()]
+  def by_type(type) do
+    spec = [
+      {
+        {:_, %{type: type}},
+        [],
+        [{:element, 2, :"$_"}]
+      }
+    ]
+
+    :ets.select(__MODULE__, spec)
+  end
 end
