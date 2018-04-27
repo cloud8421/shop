@@ -19,7 +19,10 @@ defmodule Store.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {Store.Application, []}
+      mod: {Store.Application, []},
+      start_phases: [
+        create_store: []
+      ]
     ]
   end
 

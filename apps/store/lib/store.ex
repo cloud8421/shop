@@ -1,18 +1,38 @@
 defmodule Store do
   @moduledoc """
-  Documentation for Store.
+  Provides a in-memory, ETS backed product store.
   """
 
-  @doc """
-  Hello world.
+  @spec create_table :: :ok | no_return
+  def create_table do
+    __MODULE__ = :ets.new(__MODULE__, [:public, :named_table, read_concurrency: true])
+    :ok
+  end
 
-  ## Examples
+  @spec clear :: :ok | no_return
+  def clear do
+    true = :ets.delete_all_objects(__MODULE__)
+    :ok
+  end
 
-      iex> Store.hello
-      :world
+  @spec insert(Store.Product.t()) :: :ok | no_return
+  def insert(product) do
+    true = :ets.insert(__MODULE__, {product.sku, product})
+    :ok
+  end
 
-  """
-  def hello do
-    :world
+  @spec find(Store.Product.sku()) :: {:ok, Store.Product.t()} | {:error, :not_found}
+  def find(sku) do
+    case :ets.lookup(__MODULE__, sku) do
+      [{^sku, product}] -> {:ok, product}
+      _ -> {:error, :not_found}
+    end
+  end
+
+  @spec all :: [Store.Product.t()]
+  def all do
+    __MODULE__
+    |> :ets.tab2list()
+    |> Keyword.values()
   end
 end

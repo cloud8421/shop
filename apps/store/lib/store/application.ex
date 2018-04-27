@@ -17,4 +17,8 @@ defmodule Store.Application do
     opts = [strategy: :one_for_one, name: Store.Supervisor]
     Supervisor.start_link(children, opts)
   end
+
+  def start_phase(:create_store, _type, _args) do
+    Store.create_table()
+  end
 end
