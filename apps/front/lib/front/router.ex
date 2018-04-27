@@ -11,6 +11,7 @@ defmodule Front.Router do
   end
 
   forward "/products", to: Front.Router.Product
+  forward "/reports", to: Front.Router.Report
 
   match _ do
     send_resp(conn, 404, "not found")
