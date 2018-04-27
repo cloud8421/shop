@@ -3,41 +3,43 @@ defmodule Store do
   Provides a in-memory, ETS backed product store.
   """
 
+  @type table :: :ets.tid() | atom
+
   @spec create_table :: :ok | no_return
   def create_table do
     __MODULE__ = :ets.new(__MODULE__, [:public, :named_table, read_concurrency: true])
     :ok
   end
 
-  @spec clear :: :ok | no_return
-  def clear do
-    true = :ets.delete_all_objects(__MODULE__)
+  @spec clear(table()) :: :ok | no_return
+  def clear(table \\ __MODULE__) do
+    true = :ets.delete_all_objects(table)
     :ok
   end
 
-  @spec insert(Store.Product.t()) :: :ok | no_return
-  def insert(product) do
-    true = :ets.insert(__MODULE__, {product.sku, product})
+  @spec insert(table(), Store.Product.t()) :: :ok | no_return
+  def insert(table \\ __MODULE__, product) do
+    true = :ets.insert(table, {product.sku, product})
     :ok
   end
 
-  @spec find(Store.Product.sku()) :: {:ok, Store.Product.t()} | {:error, :not_found}
-  def find(sku) do
-    case :ets.lookup(__MODULE__, sku) do
+  @spec find(table(), Store.Product.sku()) :: {:ok, Store.Product.t()} | {:error, :not_found}
+  def find(table \\ __MODULE__, sku) do
+    case :ets.lookup(table, sku) do
       [{^sku, product}] -> {:ok, product}
       _ -> {:error, :not_found}
     end
   end
 
-  @spec all :: [Store.Product.t()]
-  def all do
-    __MODULE__
+  @spec all(table()) :: [Store.Product.t()]
+  def all(table \\ __MODULE__) do
+    table
     |> :ets.tab2list()
     |> Keyword.values()
   end
 
-  @spec by_type(Store.Product.type()) :: [Store.Product.t()]
-  def by_type(type) do
+  @spec by_type(table(), Store.Product.t()) :: [Store.Product.t()]
+  def by_type(table \\ __MODULE__, type) do
     spec = [
       {
         {:_, %{type: type}},
@@ -46,6 +48,6 @@ defmodule Store do
       }
     ]
 
-    :ets.select(__MODULE__, spec)
+    :ets.select(table, spec)
   end
 end
