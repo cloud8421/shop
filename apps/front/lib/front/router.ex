@@ -10,6 +10,8 @@ defmodule Front.Router do
     send_resp(conn, 200, "world")
   end
 
+  forward "/products", to: Front.Router.Product
+
   match _ do
     send_resp(conn, 404, "not found")
   end
