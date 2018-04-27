@@ -27,7 +27,8 @@ defmodule Front.MixProject do
   defp deps do
     [
       {:cowboy, "~> 2.1"},
-      {:plug, "~> 1.0"}
+      {:plug, "~> 1.0"},
+      {:jason, "~> 1.0"}
     ]
   end
 end
