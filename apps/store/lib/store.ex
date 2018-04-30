@@ -11,6 +11,11 @@ defmodule Store do
     :ok
   end
 
+  @spec create_test_table :: table()
+  def create_test_table do
+    :ets.new(__MODULE__, read_concurrency: true)
+  end
+
   @spec clear(table()) :: :ok | no_return
   def clear(table \\ __MODULE__) do
     true = :ets.delete_all_objects(table)

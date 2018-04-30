@@ -6,20 +6,19 @@ defmodule Front.Router.ProductTest do
 
   @opts R.init([])
 
-  test "GET /" do
-    Store.clear()
+  setup [:create_test_store]
 
+  test "GET /", %{store: store} do
     conn =
       get("/")
+      |> put_private(:store, store)
       |> R.call(@opts)
 
     assert conn.status == 200
     assert conn.resp_body == "[]"
   end
 
-  test "GET / with products" do
-    Store.clear()
-
+  test "GET / with products", %{store: store} do
     product_one =
       Store.Product.new(%{
         sku: "p123",
@@ -36,11 +35,12 @@ defmodule Front.Router.ProductTest do
         description: "Some printer"
       })
 
-    :ok = Store.insert(product_one)
-    :ok = Store.insert(product_two)
+    :ok = Store.insert(store, product_one)
+    :ok = Store.insert(store, product_two)
 
     conn =
       get("/")
+      |> put_private(:store, store)
       |> R.call(@opts)
 
     assert conn.status == 200
@@ -49,7 +49,7 @@ defmodule Front.Router.ProductTest do
              ~s([{"description":"Some printer","name":"Printer-two","sku":"p456","type":"kitchen_appliance"},{"description":"Some printer","name":"Printer-one","sku":"p123","type":"computer_accessory"}])
   end
 
-  test "POST /" do
+  test "POST /", %{store: store} do
     params = %{
       "sku" => "p456",
       "type" => "kitchen_appliance",
@@ -59,6 +59,7 @@ defmodule Front.Router.ProductTest do
 
     conn =
       post("/", params)
+      |> put_private(:store, store)
       |> R.call(@opts)
 
     assert conn.status == 201
@@ -73,5 +74,11 @@ defmodule Front.Router.ProductTest do
   defp get(path) do
     conn(:get, path)
     |> put_req_header("content-type", "application/json")
+  end
+
+  defp create_test_store(_context) do
+    store = Store.create_test_table()
+
+    [store: store]
   end
 end

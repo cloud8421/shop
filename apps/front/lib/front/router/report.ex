@@ -3,11 +3,13 @@ defmodule Front.Router.Report do
 
   use Plug.Router
 
+  plug Front.AssignStore
   plug :match
   plug :dispatch
 
   get "/by_type/:type" do
-    products = Store.by_type(type)
+    store = conn.private[:store]
+    products = Store.by_type(store, type)
 
     send_resp(conn, 200, Jason.encode!(%{count: Enum.count(products)}))
   end

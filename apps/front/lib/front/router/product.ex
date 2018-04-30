@@ -8,22 +8,27 @@ defmodule Front.Router.Product do
     pass: ["application/json"],
     json_decoder: Jason
 
+  plug Front.AssignStore
   plug :match
   plug :dispatch
 
   get "/" do
-    products = Store.all()
+    store = conn.private[:store]
+
+    products = Store.all(store)
 
     send_resp(conn, 200, Jason.encode!(products))
   end
 
   post "/" do
+    store = conn.private[:store]
+
     new_product =
       conn.body_params
       |> whitelist_params
       |> Store.Product.new()
 
-    :ok = Store.insert(new_product)
+    :ok = Store.insert(store, new_product)
     send_resp(conn, 201, Jason.encode!(%{sku: new_product.sku}))
   end
 
