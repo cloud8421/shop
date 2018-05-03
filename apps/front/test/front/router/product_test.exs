@@ -10,7 +10,7 @@ defmodule Front.Router.ProductTest do
     Store.clear()
 
     conn =
-      conn(:get, "/")
+      get("/")
       |> R.call(@opts)
 
     assert conn.status == 200
@@ -40,12 +40,38 @@ defmodule Front.Router.ProductTest do
     :ok = Store.insert(product_two)
 
     conn =
-      conn(:get, "/")
+      get("/")
       |> R.call(@opts)
 
     assert conn.status == 200
 
     assert conn.resp_body ==
              ~s([{"description":"Some printer","name":"Printer-two","sku":"p456","type":"kitchen_appliance"},{"description":"Some printer","name":"Printer-one","sku":"p123","type":"computer_accessory"}])
+  end
+
+  test "POST /" do
+    params = %{
+      "sku" => "p456",
+      "type" => "kitchen_appliance",
+      "name" => "Printer-two",
+      "description" => "Some printer"
+    }
+
+    conn =
+      post("/", params)
+      |> R.call(@opts)
+
+    assert conn.status == 201
+    assert conn.resp_body == ~s({"sku":"p456"})
+  end
+
+  defp post(path, params) do
+    conn(:post, path, Jason.encode!(params))
+    |> put_req_header("content-type", "application/json")
+  end
+
+  defp get(path) do
+    conn(:get, path)
+    |> put_req_header("content-type", "application/json")
   end
 end
