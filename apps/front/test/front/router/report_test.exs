@@ -12,8 +12,7 @@ defmodule Front.Router.ReportTest do
   test "GET /by_type/:type", %{store: store} do
     conn =
       conn(:get, "/by_type/computer_accessory")
-      |> Context.call([])
-      |> Context.assign(:store, store)
+      |> Context.with_overrides(store: store)
       |> R.call(@opts)
 
     assert conn.status == 200

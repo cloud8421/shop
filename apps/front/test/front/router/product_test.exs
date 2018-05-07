@@ -12,8 +12,7 @@ defmodule Front.Router.ProductTest do
   test "GET /", %{store: store} do
     conn =
       get("/")
-      |> Context.call([])
-      |> Context.assign(:store, store)
+      |> Context.with_overrides(store: store)
       |> R.call(@opts)
 
     assert conn.status == 200
@@ -42,8 +41,7 @@ defmodule Front.Router.ProductTest do
 
     conn =
       get("/")
-      |> Context.call([])
-      |> Context.assign(:store, store)
+      |> Context.with_overrides(store: store)
       |> R.call(@opts)
 
     assert conn.status == 200
@@ -62,8 +60,7 @@ defmodule Front.Router.ProductTest do
 
     conn =
       post("/", params)
-      |> Context.call([])
-      |> Context.assign(:store, store)
+      |> Context.with_overrides(store: store)
       |> R.call(@opts)
 
     assert conn.status == 201
