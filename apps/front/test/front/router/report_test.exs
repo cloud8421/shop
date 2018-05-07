@@ -3,6 +3,7 @@ defmodule Front.Router.ReportTest do
   use Plug.Test
 
   alias Front.Router.Report, as: R
+  alias Front.Plug.Context
 
   @opts R.init([])
 
@@ -11,7 +12,8 @@ defmodule Front.Router.ReportTest do
   test "GET /by_type/:type", %{store: store} do
     conn =
       conn(:get, "/by_type/computer_accessory")
-      |> put_private(:store, store)
+      |> Context.call([])
+      |> Context.assign(:store, store)
       |> R.call(@opts)
 
     assert conn.status == 200

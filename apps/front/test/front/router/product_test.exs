@@ -3,6 +3,7 @@ defmodule Front.Router.ProductTest do
   use Plug.Test
 
   alias Front.Router.Product, as: R
+  alias Front.Plug.Context
 
   @opts R.init([])
 
@@ -11,7 +12,8 @@ defmodule Front.Router.ProductTest do
   test "GET /", %{store: store} do
     conn =
       get("/")
-      |> put_private(:store, store)
+      |> Context.call([])
+      |> Context.assign(:store, store)
       |> R.call(@opts)
 
     assert conn.status == 200
@@ -40,7 +42,8 @@ defmodule Front.Router.ProductTest do
 
     conn =
       get("/")
-      |> put_private(:store, store)
+      |> Context.call([])
+      |> Context.assign(:store, store)
       |> R.call(@opts)
 
     assert conn.status == 200
@@ -59,7 +62,8 @@ defmodule Front.Router.ProductTest do
 
     conn =
       post("/", params)
-      |> put_private(:store, store)
+      |> Context.call([])
+      |> Context.assign(:store, store)
       |> R.call(@opts)
 
     assert conn.status == 201

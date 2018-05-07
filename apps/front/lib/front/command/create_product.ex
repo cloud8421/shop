@@ -1,13 +1,11 @@
 defmodule Front.Command.CreateProduct do
-  def from_string_attrs(attrs, opts) do
-    store = Keyword.fetch!(opts, :store)
-
+  def from_string_attrs(attrs, context \\ Front.Context.new()) do
     new_product =
       attrs
       |> whitelist
       |> Store.Product.new()
 
-    :ok = Store.insert(store, new_product)
+    :ok = Store.insert(context.store, new_product)
 
     {:ok, new_product}
   end

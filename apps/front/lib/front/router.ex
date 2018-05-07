@@ -3,6 +3,8 @@ defmodule Front.Router do
 
   use Plug.Router
 
+  plug Front.Plug.Context
+
   plug :match
   plug :dispatch
 
