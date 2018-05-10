@@ -5,7 +5,11 @@ defmodule Shop.MixProject do
     [
       apps_path: "apps",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      dialyzer_warnings: [:unmatched_returns, :error_handling, :race_conditions, :unknown],
+      dialyzer_ignored_warnings: [
+        {:warn_contract_supertype, :_, {:extra_range, [:_, :__protocol__, 1, :_, :_]}}
+      ]
     ]
   end
 
@@ -15,6 +19,6 @@ defmodule Shop.MixProject do
   #
   # Run "mix help deps" for examples and options.
   defp deps do
-    []
+    [{:dialyzex, "~> 1.1", only: :dev}]
   end
 end
