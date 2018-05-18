@@ -1,6 +1,8 @@
 defmodule Front.Router.Product do
   @moduledoc false
 
+  alias Front.Command.CreateProduct
+
   use Plug.Router
 
   plug Plug.Parsers,
@@ -23,21 +25,7 @@ defmodule Front.Router.Product do
   post "/" do
     store = conn.private[:store]
 
-    new_product =
-      conn.body_params
-      |> whitelist_params
-      |> Store.Product.new()
-
-    :ok = Store.insert(store, new_product)
+    {:ok, new_product} = CreateProduct.from_string_attrs(conn.body_params, store: store)
     send_resp(conn, 201, Jason.encode!(%{sku: new_product.sku}))
-  end
-
-  defp whitelist_params(params) do
-    %{
-      sku: Map.get(params, "sku"),
-      type: Map.get(params, "type"),
-      name: Map.get(params, "name"),
-      description: Map.get(params, "description")
-    }
   end
 end
