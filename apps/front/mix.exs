@@ -28,6 +28,7 @@ defmodule Front.MixProject do
     [
       {:cowboy, "~> 2.1"},
       {:plug, "~> 1.0"},
+      {:plug_cowboy, "~> 2.0"},
       {:jason, "~> 1.0"},
       {:store, in_umbrella: true}
     ]

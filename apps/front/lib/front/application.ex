@@ -5,7 +5,7 @@ defmodule Front.Application do
 
   def start(_type, _args) do
     children = [
-      {Plug.Adapters.Cowboy2, scheme: :http, plug: Front.Router, options: [port: port()]}
+      {Plug.Adapters.Cowboy, scheme: :http, plug: Front.Router, options: [port: port()]}
     ]
 
     opts = [strategy: :one_for_one, name: Front.Supervisor]
